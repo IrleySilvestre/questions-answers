@@ -4,7 +4,7 @@
   "description": "Projto feito no curso Formacao Node - Udemy",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --ext * node index.js"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
   "dependencies": {
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.3"
   },
   "devDependencies": {
     "connect-livereload": "^0.6.1",

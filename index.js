@@ -1,5 +1,22 @@
 const express = require("express");
 
+const connection = require("./src/db/db");
+
+const questionModel = require("./src/model/question");
+
+questionModel.sync({ force: false }).then(() => {
+  console.log("Tabela Questions ok.");
+});
+
+connection
+  .authenticate()
+  .then(() => {
+    console.log("Banco de dados conectado.");
+  })
+  .catch((error) => {
+    console.error("Erro ao conectar banco de dados.", error);
+  });
+
 const app = express();
 const port = 3001;
 
@@ -16,8 +33,23 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.render("index");
+  questionModel.findAll({ raw: true }).then((result) => {
+    const listQuestions = result;
+    res.render("index", { listQuestions });
+  });
 });
 app.get("/question", (req, res) => {
   res.render("question");
+});
+
+app.post("/question", (req, res) => {
+  const question = req.body;
+  questionModel
+    .create(question)
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch((error) => {
+      console.log(error.parent);
+    });
 });
