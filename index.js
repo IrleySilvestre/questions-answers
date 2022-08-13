@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 
 const connection = require("./src/db/db");
 
@@ -32,11 +33,27 @@ app.listen(port, () => {
   console.log(`Server listen on port ${port}`);
 });
 
-app.get("/", (req, res) => {
-  questionModel.findAll({ raw: true }).then((result) => {
-    const listQuestions = result;
-    res.render("index", { listQuestions });
-  });
+app.get("/:title?", (req, res) => {
+  const { title } = req.params;
+  if (title) {
+    questionModel
+      .findAll({
+        raw: true,
+        order: [["id", "DESC"]],
+        where: { title: { [Op.like]: "%" + title + "%" } },
+      })
+      .then((result) => {
+        const listQuestions = result;
+        res.render("index", { listQuestions });
+      });
+  } else {
+    questionModel
+      .findAll({ raw: true, order: [["id", "DESC"]] })
+      .then((result) => {
+        const listQuestions = result;
+        res.render("index", { listQuestions });
+      });
+  }
 });
 app.get("/question", (req, res) => {
   res.render("question");
